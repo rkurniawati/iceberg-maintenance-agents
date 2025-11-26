@@ -1,0 +1,67 @@
+version: '3.7'
+services:
+  trino:
+    image: trinodb/trino:latest
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./trino/etc:/etc/trino
+    networks:
+      - trino-iceberg-network
+
+  minio:
+    image: minio/minio:latest
+    ports:
+      - 9000:9000
+      - 9001:9001
+    environment:
+      - MINIO_ACCESS_KEY=minio
+      - MINIO_SECRET_KEY=minio123
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    command: ["server", "/data", "--console-address", ":9001"]
+    networks:
+      - trino-iceberg-network
+
+  mc:
+    depends_on:
+      - minio
+    image: minio/mc
+    container_name: mc
+    environment:
+      - AWS_ACCESS_KEY_ID=minio
+      - AWS_SECRET_ACCESS_KEY=minio123
+      - AWS_REGION=us-east-1
+    networks:
+      - trino-iceberg-network
+    entrypoint: >
+      /bin/sh -c "
+      until (/usr/bin/mc alias set minios3 http://minio:9000 $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY) do echo '...waiting...' && sleep 1; done;
+      /usr/bin/mc rm -r --force minios3/warehouse;
+      /usr/bin/mc mb minios3/warehouse;
+      /usr/bin/mc anonymous set public minios3/warehouse;
+      "
+
+  metastore-catalog:
+    image: postgres:16
+    ports:
+      - 5432:5432
+    volumes:
+      - ./iceberg-catalog-db:/docker-entrypoint-initdb.d
+    environment:
+      - POSTGRES_USER=metastore-user
+      - POSTGRES_PASSWORD=metastore-password
+      - POSTGRES_DB=metastore
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U metastore-user -d metastore"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - trino-iceberg-network
+
+networks:
+  trino-iceberg-network:
