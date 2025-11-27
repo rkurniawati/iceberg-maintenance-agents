@@ -30,16 +30,15 @@ services:
     depends_on:
       - minio
     image: minio/mc
-    container_name: mc
     environment:
-      - AWS_ACCESS_KEY_ID=minio
-      - AWS_SECRET_ACCESS_KEY=minio123
-      - AWS_REGION=us-east-1
+      AWS_ACCESS_KEY_ID: minio
+      AWS_SECRET_ACCESS_KEY: minio123
+      AWS_REGION: us-east-1
     networks:
       - trino-iceberg-network
     entrypoint: >
       /bin/sh -c "
-      until (/usr/bin/mc alias set minios3 http://minio:9000 $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY) do echo '...waiting...' && sleep 1; done;
+      until (/usr/bin/mc alias set minios3 http://minio:9000 minio minio123) do echo '...waiting...' && sleep 1; done;
       /usr/bin/mc rm -r --force minios3/warehouse;
       /usr/bin/mc mb minios3/warehouse;
       /usr/bin/mc anonymous set public minios3/warehouse;
