@@ -1,7 +1,7 @@
 from google.adk.agents import Agent
 from google.adk.models.google_llm import Gemini
-from ..tools import get_tables, get_table_schema
-from ..config import model_config
+from iceberg.tools import get_tables, get_table_schema
+from iceberg.config import model_config
 
 iceberg_database_info_agent = Agent(
     name="database_assistant",
