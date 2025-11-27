@@ -34,19 +34,15 @@ class IcebergConfiguration:
         "iceberg_catalog" : "iceberg"
     }
 
-@dataclass
-class ModelConfiguration:
-    retry_config=types.HttpRetryOptions(
+iceberg_config = IcebergConfiguration()
+
+def get_fast_model():
+    return "gemini-2.5-flash"
+
+def get_retry_config():
+    return types.HttpRetryOptions(
         attempts=5,  # Maximum retry attempts
         exp_base=7,  # Delay multiplier
         initial_delay=1, # Initial delay before first retry (in seconds)
         http_status_codes=[429, 500, 503, 504] # Retry on these HTTP errors
     )
-    fast_model=Gemini(
-        model="gemini-2.5-flash-lite",
-        retry_options=retry_config
-    )
-
-
-iceberg_config = IcebergConfiguration()
-model_config = ModelConfiguration()

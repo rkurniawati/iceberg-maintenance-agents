@@ -3,7 +3,7 @@ from pyiceberg.schema import Schema
 from.config import iceberg_config
 from pyiceberg.catalog import load_catalog
 
-def get_table_schema(table_name:str) -> Schema:
+def get_table_schema(table_name:str) -> str:
     """
     Get the table schema for a given table name.
 
@@ -11,13 +11,36 @@ def get_table_schema(table_name:str) -> Schema:
         table_name (str): the name of the table
 
     Returns:
-        The table's schema
+        The table's schema in JSON format, for example
+        {
+          "type": "struct",
+          "fields": [
+            {
+              "id": 1,
+              "name": "name",
+              "type": "string",
+              "required": false
+            },
+            {
+              "id": 2,
+              "name": "owner",
+              "type": "string",
+              "required": false
+            }
+          ],
+          "schema-id": 0,
+          "identifier-field-ids": ["id"]
+        }
     """
 
     catalog = load_catalog(iceberg_config.catalog_name, **iceberg_config.catalog_properties)
     table_identifier = (iceberg_config.schema, table_name)  # Replace with your table's namespace and name
     table = catalog.load_table(table_identifier)
-    return table.schema()
+    iceberg_schema = table.schema()
+
+    # The to_dict() method provides a JSON-serializable dictionary
+    json_schema = iceberg_schema.model_dump_json(indent=2)
+    return json_schema
 
 def get_tables() -> list[str]:
     """
