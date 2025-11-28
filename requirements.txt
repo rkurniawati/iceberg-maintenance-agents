@@ -4,3 +4,4 @@ psycopg2-binary
 protobuf~=6.33.1
 python-dotenv~=1.2.1
 SQLAlchemy~=2.0.44
+trino

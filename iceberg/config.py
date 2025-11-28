@@ -36,6 +36,24 @@ class IcebergConfiguration:
 
 iceberg_config = IcebergConfiguration()
 
+@dataclass
+class TrinoConfiguration:
+    """
+    Configuration for Trino
+    """
+    connection_properties = {
+        "host": "localhost",
+        "port": "8080",
+        "catalog" : "iceberg",
+        "schema" : "dogs",
+        "user": "dog"
+    }
+
+    file_size_threshold = "128MB"
+
+
+trino_config = TrinoConfiguration()
+
 def get_fast_model():
     return "gemini-2.5-flash"
 
