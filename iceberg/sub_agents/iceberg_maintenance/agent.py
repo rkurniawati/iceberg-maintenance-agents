@@ -1,7 +1,7 @@
 from google.adk.agents import Agent
 from .prompt import TRINO_EXECUTOR_PROMPT
 from google.adk.models.google_llm import Gemini
-from iceberg.config import get_retry_config, get_fast_model
+from ...config import get_retry_config, get_fast_model
 from .tools import run_compaction, run_expire_snapshots, run_optimize_manifests, run_remove_orphan_files
 
 iceberg_maintenance = Agent(

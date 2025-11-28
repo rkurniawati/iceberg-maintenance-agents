@@ -1,5 +1,5 @@
 from trino.dbapi import connect
-from iceberg.config import trino_config
+from ...config import trino_config
 
 
 def convert_file_size_to_str(file_size_in_bytes: int) -> str:

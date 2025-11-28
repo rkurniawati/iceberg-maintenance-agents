@@ -2,7 +2,7 @@ from google.adk.agents import Agent
 from google.adk.tools import VertexAiSearchTool
 from .prompt import ICEBERG_KNOWLEDGE_AGENT_PROMPT
 from google.adk.models.google_llm import Gemini
-from iceberg.config import get_retry_config, get_fast_model
+from ...config import get_retry_config, get_fast_model
 
 iceberg_knowledge_agent = Agent(
     name="iceberg_knowledge_agent",

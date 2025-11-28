@@ -1,4 +1,4 @@
-from iceberg.config import iceberg_config
+from ...config import iceberg_config
 from pyiceberg.catalog import load_catalog
 
 def get_table_schema(table_name:str) -> str:
