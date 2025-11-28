@@ -18,9 +18,9 @@ This agent-based approach allows for intelligent automation, where tasks are dyn
 
 ```mermaid
 graph LR
-    RootAgent --> IcebergDataLakeInfoAgent
-    RootAgent --> IcebergMaintenanceAgent
-    RootAgent --> IcebergKnowledgeAgent
+    RootAgent([root_agent]) --> IcebergDataLakeInfoAgent([iceberg_datalake_info_agent])
+    RootAgent --> IcebergMaintenanceAgent([iceberg_maintenance_agent])
+    RootAgent --> IcebergKnowledgeAgent([iceberg_knowledge_agent])
     IcebergDataLakeInfoAgent --> get_tables
     IcebergDataLakeInfoAgent --> get_table_schema
     IcebergDataLakeInfoAgent --> get_datafile_info
@@ -28,7 +28,7 @@ graph LR
     IcebergMaintenanceAgent --> run_expire_snapshots
     IcebergMaintenanceAgent --> run_optimize_manifests
     IcebergMaintenanceAgent --> run_remove_orphan_files
-    IcebergKnowledgeAgent --> IcebergDocumentation
+    IcebergKnowledgeAgent --> IcebergDocumentation[Apache Iceberg<br>documentation in<br>Vertex AI DataStore]@{ shape: docs }
 ```
 
 ## Run a local Apache Iceberg datalake
