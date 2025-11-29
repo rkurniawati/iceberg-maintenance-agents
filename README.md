@@ -31,7 +31,11 @@ graph LR
     IcebergKnowledgeAgent --> IcebergDocumentation[Apache Iceberg<br>documentation in<br>Vertex AI DataStore]@{ shape: docs }
 ```
 
-## Run a local Apache Iceberg datalake
+## Run Locally
+
+To run locally, first you should make sure that you have an Apache Iceberg datalake. You can use the provided docker containers to bring one up.
+
+### [Optional] Run a local Apache Iceberg datalake 
 
 You can use the iceberg provided in `./iceberg-docker`
 
@@ -41,8 +45,24 @@ cd iceberg-docker
 docker-compose up -d
 ```
 
-To start:
+To stop:
 ```bash
 cd iceberg-docker
 docker-compose stop -d --volumes
 ```
+
+### Run the Multi-agent Iceberg Maintainer
+
+Using adk web UI:
+
+```shell
+adk web
+```
+
+Using adk command line:
+
+```shell
+adk run iceberg
+```
+
+Using the python main (and pre-defined interactions)

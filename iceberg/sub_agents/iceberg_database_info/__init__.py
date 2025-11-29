@@ -1,1 +1,1 @@
-from .agent import iceberg_database_info_agent
+from .get_agent import get_iceberg_database_info_agent

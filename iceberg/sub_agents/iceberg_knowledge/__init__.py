@@ -1,1 +1,1 @@
-from .agent import iceberg_knowledge_agent
+from .get_agent import get_iceberg_knowledge_agent
