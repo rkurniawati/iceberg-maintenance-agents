@@ -8,7 +8,7 @@ from pyiceberg.schema import Schema
 from pyiceberg.table.snapshots import Snapshot
 from pyiceberg.io import FileIO
 from pyiceberg.manifest import ManifestFile
-from pyarrow import Table as PyArrowTable
+from pyarrow import Table as PyArrowTable, ArrowInvalid
 
 from ...config import iceberg_config
 from pyiceberg.catalog import load_catalog
@@ -134,9 +134,17 @@ def get_all_table_files(table_name: str) -> set[str]:
     table_identifier: Tuple[str, str] = (iceberg_config.schema, table_name)
     table: Table = catalog.load_table(table_identifier)
 
-    all_files: PyArrowTable = table.inspect.all_files()
+    try:
+        all_files: PyArrowTable = table.inspect.all_files()
 
-    return {x["file_path"] for x in all_files.to_pylist()}
+        return {x["file_path"] for x in all_files.to_pylist()}
+    except ArrowInvalid as e:
+        # empty table will result in ArrowInvalid
+        return set()
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return set()
+
 
 def get_table_location(table_name: str) -> str:
     """
@@ -187,7 +195,8 @@ def list_s3_files(bucket: str, prefix: str) -> Set[str]:
 
 def find_orphan_files(table_name: str) -> list[str]:
     """
-    Identifies files present in a table's S3 data location but not in the Iceberg table metadata.
+    Identifies orphans or orphan files in a given table data area.
+    Orphan files are files that are present in a table's S3 data location but not in the Iceberg table metadata.
 
     Args:
         table_name (str): the name of the table
@@ -367,4 +376,4 @@ def get_snapshots(table_name: str) -> list[dict[str, Union[int, str]]]:
     return list_of_snapshots
 
 if __name__ == "__main__":
-    print(get_snapshots("dog"))
+    print(find_orphan_files("shelters"))
