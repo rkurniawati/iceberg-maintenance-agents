@@ -53,6 +53,23 @@ docker-compose stop -d --volumes
 
 ### Run the Multi-agent Iceberg Maintainer
 
+#### Setting up the Python virtual environment
+Before running any of the commands, create and activate the virtual environment:
+
+To create the python virtual environment:
+```shell
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+
+#### Running the agent
+If you have already created the virtual environment, you can activate it using:
+```shell
+source .venv/bin/activate
+```
+
 Using adk web UI:
 
 ```shell
@@ -66,3 +83,7 @@ adk run iceberg
 ```
 
 Using the python main (and pre-defined interactions)
+
+```shell
+python -m iceberg.main
+```

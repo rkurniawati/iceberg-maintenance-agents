@@ -1,11 +1,5 @@
-import asyncio
-
-from dotenv import load_dotenv
-from google.adk import Runner
 from google.adk.agents import Agent
 from google.adk.models import Gemini
-from google.adk.sessions import InMemorySessionService
-from google.genai import types
 
 from .sub_agents.iceberg_database_info import get_iceberg_database_info_agent
 from .sub_agents.iceberg_knowledge import get_iceberg_knowledge_agent
@@ -14,59 +8,7 @@ from google.adk.tools.agent_tool import AgentTool
 from .config import get_fast_model, get_retry_config
 from .prompt import ICEBERG_AGENT_PROMPT
 
-async def run_session(
-        runner_instance: Runner,
-        user_id: str,
-        user_queries: list[str] | str | None = None,
-        session_name: str = "default",
-):
-    print(f"\n ### Session: {session_name}")
 
-    # Get app name from the Runner
-    app_name = runner_instance.app_name
-
-    # Attempt to create a new session or retrieve an existing one
-    try:
-        session = await session_service.create_session(
-            app_name=app_name, user_id=user_id, session_id=session_name
-        )
-    except:
-        session = await session_service.get_session(
-            app_name=app_name, user_id=user_id, session_id=session_name
-        )
-
-    # Process queries if provided
-    if session and user_queries:
-        # Convert single query to list for uniform processing
-        if type(user_queries) == str:
-            user_queries = [user_queries]
-
-        # Process each query in the list sequentially
-        for query in user_queries:
-            print(f"\nUser > {query}")
-
-            # Convert the query string to the ADK Content format
-            query = types.Content(role="user", parts=[types.Part(text=query)])
-
-            # Stream the agent's response asynchronously
-            async for event in runner_instance.run_async(
-                    user_id=user_id, session_id=session.id, new_message=query
-            ):
-                # Check if the event contains valid content
-                if event.content and event.content.parts:
-                    # Filter out empty or "None" responses before printing
-                    if (
-                            event.content.parts[0].text != "None"
-                            and event.content.parts[0].text
-                    ):
-                        print(f"{get_fast_model()} > ", event.content.parts[0].text)
-    elif not session:
-        print("Session could not be created or retrieved.")
-    else:
-        print("No queries!")
-
-load_dotenv()
-session_service = InMemorySessionService()
 root_agent = Agent(
     name="root_agent",
     model=Gemini(model=get_fast_model(), retry_options=get_retry_config()),
@@ -75,24 +17,6 @@ root_agent = Agent(
     sub_agents=[get_iceberg_database_info_agent(), get_iceberg_maintenance()],
     tools=[AgentTool(agent=get_iceberg_knowledge_agent())],
 )
-
-if __name__ == "__main__":
-    runner = Runner(
-        agent=root_agent,
-        app_name="Iceberg Multi-agent Maintainer",
-        session_service=session_service,
-    )
-    asyncio.run(
-        run_session(
-            runner,
-            "bob123",
-            [
-                "Are there any orphans in the datalake?",
-                "Would I get benefits from running any Apache Iceberg maintenance operations?",
-            ],
-            "stateful-agentic-session",
-        )
-    )
 
 
 
