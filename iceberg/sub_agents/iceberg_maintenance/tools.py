@@ -32,7 +32,7 @@ def run_compaction(table_name: str, file_size_in_bytes: int):
 
     Args:
         table_name (str): name of the table to optimize
-        file_size_in_bytes (int): file size in bytes
+        file_size_in_bytes (int): file size in bytes targeted by the compaction
 
     Returns:
         none

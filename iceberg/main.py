@@ -1,8 +1,8 @@
 from google.adk.sessions import InMemorySessionService
+from google.adk.sessions.sqlite_session_service import SqliteSessionService
 from google.genai import types
 import asyncio
 
-from dotenv import load_dotenv
 from google.adk import Runner
 from .agent import root_agent
 from .config import get_fast_model
@@ -59,8 +59,7 @@ async def run_session(
         print("No queries!")
 
 if __name__ == "__main__":
-    load_dotenv()
-    session_service = InMemorySessionService()
+    session_service = SqliteSessionService(db_path="iceberg_agent_main.db")
     runner = Runner(
         agent=root_agent,
         app_name="Iceberg Multi-agent Maintainer",
@@ -71,8 +70,9 @@ if __name__ == "__main__":
             runner,
             "bob123",
             [
-                "Are there any orphans in the datalake?",
-                "Would I get benefits from running any Apache Iceberg maintenance operations?",
+                "Do I have any preferences set?",
+                "Please use schema dogs in the datalake",
+                "How many tables are there in the datalake?",
             ],
             "stateful-agentic-session",
         )
