@@ -1,5 +1,6 @@
 from typing import Union
 
+import logging
 from google.adk.tools import ToolContext
 from .config import iceberg_config
 
@@ -28,6 +29,7 @@ def save_user_preferences(tool_context: ToolContext, new_preferences: dict[str, 
 
     tool_context.state['user_preferences'] = current_preferences
 
+    logging.info(f"Preferences updated successfully: {new_preferences}")
     return f"Preferences updated successfully: {new_preferences}"
 
 def recall_user_preferences(tool_context: ToolContext) -> dict[str, Union[str, int]]:
@@ -38,6 +40,7 @@ def recall_user_preferences(tool_context: ToolContext) -> dict[str, Union[str, i
         iceberg_config.schema=preferences.get('schema')
 
     if preferences:
+        logging.info(f"Preferences retrieved {preferences}")
         return preferences
     else:
         return {"message": "No preferences found."}

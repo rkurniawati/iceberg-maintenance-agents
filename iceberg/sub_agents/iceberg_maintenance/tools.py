@@ -1,3 +1,4 @@
+import logging
 from trino.dbapi import connect
 from ...config import trino_config
 
@@ -42,15 +43,15 @@ def run_compaction(table_name: str, file_size_in_bytes: int):
 
     try:
         cur.execute(f"ALTER TABLE {table_name} EXECUTE optimize(file_size_threshold => '{convert_file_size_to_str(file_size_in_bytes)}')")
-        print("Compaction command executed successfully.")
+        logging.debug("Compaction command executed successfully.")
         # Fetch results if the command returns any (e.g., status message)
         if cur.description:
             rows = cur.fetchall()
             for row in rows:
-                print(row)
+                logging.debug(row)
 
     except Exception as e:
-        print(f"An error occurred: {e}")
+        logging.error(f"An error occurred: {e}")
 
     finally:
         cur.close()
@@ -73,14 +74,14 @@ def run_optimize_manifests(table_name: str):
 
     try:
         cur.execute(f"ALTER TABLE {table_name} EXECUTE optimize_manifests")
-        print("Optimize manifests command executed successfully.")
+        logging.debug("Optimize manifests command executed successfully.")
         if cur.description:
             rows = cur.fetchall()
             for row in rows:
-                print(row)
+                logging.debug(row)
 
     except Exception as e:
-        print(f"An error occurred: {e}")
+        logging.error(f"An error occurred: {e}")
 
     finally:
         cur.close()
@@ -106,14 +107,14 @@ def run_expire_snapshots(table_name: str, retention_days: int):
 
     try:
         cur.execute(f"ALTER TABLE {table_name} EXECUTE expire_snapshots(retention_threshold => '{retention_days}d')")
-        print("Expire snapshots command executed successfully.")
+        logging.debug("Expire snapshots command executed successfully.")
         if cur.description:
             rows = cur.fetchall()
             for row in rows:
-                print(row)
+                logging.debug(row)
 
     except Exception as e:
-        print(f"An error occurred: {e}")
+        logging.error(f"An error occurred: {e}")
 
     finally:
         cur.close()
@@ -137,14 +138,14 @@ def run_remove_orphan_files(table_name: str, retention_days: int):
 
     try:
         cur.execute(f"ALTER TABLE {table_name} EXECUTE remove_orphan_files(retention_threshold => '{retention_days}d')")
-        print("Remove orphan files command executed successfully.")
+        logging.debug("Remove orphan files command executed successfully.")
         if cur.description:
             rows = cur.fetchall()
             for row in rows:
-                print(row)
+                logging.debug(row)
 
     except Exception as e:
-        print(f"An error occurred: {e}")
+        logging.error(f"An error occurred: {e}")
 
     finally:
         cur.close()

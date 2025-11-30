@@ -1,3 +1,4 @@
+import logging
 from google.adk.sessions import InMemorySessionService
 from google.adk.sessions.sqlite_session_service import SqliteSessionService
 from google.genai import types
@@ -13,7 +14,7 @@ async def run_session(
         user_queries: list[str] | str | None = None,
         session_name: str = "default",
 ):
-    print(f"\n ### Session: {session_name}")
+    logging.debug(f"\n ### Session: {session_name}")
 
     # Get app name from the Runner
     app_name = runner_instance.app_name
@@ -36,7 +37,7 @@ async def run_session(
 
         # Process each query in the list sequentially
         for query in user_queries:
-            print(f"\nUser > {query}")
+            logging.debug(f"\nUser > {query}")
 
             # Convert the query string to the ADK Content format
             query = types.Content(role="user", parts=[types.Part(text=query)])
@@ -52,11 +53,11 @@ async def run_session(
                             event.content.parts[0].text != "None"
                             and event.content.parts[0].text
                     ):
-                        print(f"{get_fast_model()} > ", event.content.parts[0].text)
+                        logging.debug(f"{get_fast_model()} > ", event.content.parts[0].text)
     elif not session:
-        print("Session could not be created or retrieved.")
+        logging.error("Session could not be created or retrieved.")
     else:
-        print("No queries!")
+        logging.debug("No queries!")
 
 if __name__ == "__main__":
     session_service = SqliteSessionService(db_path="iceberg_agent_main.db")

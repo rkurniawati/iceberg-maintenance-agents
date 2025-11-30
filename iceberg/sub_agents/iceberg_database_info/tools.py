@@ -1,3 +1,4 @@
+import logging
 import json
 import urllib.parse
 from typing import Union, Any, Tuple, Set
@@ -88,7 +89,7 @@ def get_all_current_table_files(table_name: str) -> list[dict[str, Union[str, in
         current_snapshot: Union[Snapshot, None] = table.current_snapshot()
 
         if current_snapshot is None:
-            print(f"Table {iceberg_config.catalog_name}.{table_name} has no snapshots (no data files).")
+            logging.debug(f"Table {iceberg_config.catalog_name}.{table_name} has no snapshots (no data files).")
             return []
 
         # Iterate over data files in the snapshot
@@ -96,7 +97,7 @@ def get_all_current_table_files(table_name: str) -> list[dict[str, Union[str, in
         data_files: PyArrowTable = table.inspect.files() # This method simplifies getting all files from current snapshot
 
         if not data_files:
-            print(f"No data files found in the current snapshot: {current_snapshot.snapshot_id}")
+            logging.debug(f"No data files found in the current snapshot: {current_snapshot.snapshot_id}")
             return []
 
         # convert data_files (pyarrow.Table to a map)
@@ -114,7 +115,7 @@ def get_all_current_table_files(table_name: str) -> list[dict[str, Union[str, in
         return file_infos
 
     except Exception as e:
-        print(f"An error occurred: {e}")
+        logging.error(f"An error occurred: {e}")
         return []
 
 def get_all_table_files(table_name: str) -> set[str]:
@@ -142,7 +143,7 @@ def get_all_table_files(table_name: str) -> set[str]:
         # empty table will result in ArrowInvalid
         return set()
     except Exception as e:
-        print(f"An error occurred: {e}")
+        logging.error(f"An error occurred: {e}")
         return set()
 
 
@@ -376,4 +377,4 @@ def get_snapshots(table_name: str) -> list[dict[str, Union[int, str]]]:
     return list_of_snapshots
 
 if __name__ == "__main__":
-    print(find_orphan_files("shelters"))
+    logging.debug(find_orphan_files("shelters"))

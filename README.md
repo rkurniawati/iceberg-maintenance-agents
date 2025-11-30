@@ -70,20 +70,28 @@ If you have already created the virtual environment, you can activate it using:
 source .venv/bin/activate
 ```
 
-Using adk web UI:
+Using adk web UI, specifying the sqlite database to persist the user preferences:
 
 ```shell
-adk web
+adk web --reload_agents --session_service_uri=sqlite:///iceberg_agent.db
 ```
 
 Using adk command line:
 
 ```shell
-adk run iceberg
+adk run iceberg  --session_service_uri=sqlite:///iceberg_agent.db
 ```
 
 Using the python main (and pre-defined interactions)
 
 ```shell
 python -m iceberg.main
+```
+
+#### Running the agent with tracing
+
+By default we have INFO-level traces. To enable DEBUG-level traces:
+
+```shell
+adk web --reload_agents --session_service_uri=sqlite:///iceberg_agent.db --log_level DEBUG
 ```
