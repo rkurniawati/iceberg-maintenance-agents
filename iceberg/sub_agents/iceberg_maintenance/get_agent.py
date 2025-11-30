@@ -9,7 +9,7 @@ def get_iceberg_maintenance() -> Agent:
     return Agent(
         name="iceberg_maintenance_agent",
         model=Gemini(model=get_fast_model(), retry_options=get_retry_config()),
-        description="An agent that accepts Apache Iceberg maintenance requests such as compaction, optimize manifests, removal of orphan files, and snapshot expirations, and executes them.",
+        description="An agent that can performs Apache Iceberg maintenance operations such as compaction, optimize manifests, removal of orphan files, and snapshot expirations. It doesn't have information about the user's datalake.",
         instruction=TRINO_EXECUTOR_PROMPT,
         disallow_transfer_to_parent=True,
         tools=[run_compaction, run_expire_snapshots, run_optimize_manifests, run_remove_orphan_files, recall_user_preferences]

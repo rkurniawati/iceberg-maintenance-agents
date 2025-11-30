@@ -1,4 +1,4 @@
-google-adk
+google-adk[eval]
 pyiceberg~=0.10.0
 psycopg2-binary
 protobuf~=6.33.1
@@ -8,3 +8,4 @@ trino~=0.336.0
 boto3~=1.41.5
 pyarrow~=22.0.0
 botocore~=1.41.5
+prometheus-client

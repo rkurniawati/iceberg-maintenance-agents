@@ -1,0 +1,37 @@
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9098:9090"
+    restart: unless-stopped
+    extra_hosts: ['host.docker.internal:host-gateway']
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    depends_on:
+      - "prometheus-pushgateway"
+    container_name: prometheus
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3008:3000"
+    restart: unless-stopped
+    extra_hosts: ['host.docker.internal:host-gateway']
+    volumes:
+      - ./grafana/grafana.ini:/etc/grafana/grafana.ini:ro
+      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+      - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_AUTH_DISABLE_LOGIN_FORM=true
+    depends_on:
+      - "prometheus"
+    container_name: grafana
+
+  prometheus-pushgateway:
+    image: prom/pushgateway
+    ports:
+      - "9099:9091"
+    extra_hosts: ['host.docker.internal:host-gateway']
+    container_name: prometheus-pushgateway

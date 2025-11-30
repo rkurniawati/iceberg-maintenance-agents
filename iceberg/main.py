@@ -1,5 +1,4 @@
 import logging
-from google.adk.sessions import InMemorySessionService
 from google.adk.sessions.sqlite_session_service import SqliteSessionService
 from google.genai import types
 import asyncio
@@ -7,6 +6,12 @@ import asyncio
 from google.adk import Runner
 from .agent import root_agent
 from .config import get_fast_model
+from .prometheus import PrometheusPlugin
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(levelname)s - %(name)s - %(message)s'
+)
 
 async def run_session(
         runner_instance: Runner,
@@ -53,7 +58,7 @@ async def run_session(
                             event.content.parts[0].text != "None"
                             and event.content.parts[0].text
                     ):
-                        logging.debug(f"{get_fast_model()} > ", event.content.parts[0].text)
+                        logging.debug(f"{get_fast_model()} > {event.content.parts[0].text}")
     elif not session:
         logging.error("Session could not be created or retrieved.")
     else:
@@ -61,10 +66,13 @@ async def run_session(
 
 if __name__ == "__main__":
     session_service = SqliteSessionService(db_path="iceberg_agent_main.db")
+    prometheus_plugin = PrometheusPlugin("http://localhost:9099")
+
     runner = Runner(
         agent=root_agent,
         app_name="Iceberg Multi-agent Maintainer",
         session_service=session_service,
+        plugins=[prometheus_plugin]
     )
     asyncio.run(
         run_session(

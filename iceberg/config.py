@@ -34,7 +34,7 @@ class IcebergConfiguration:
         "iceberg_catalog" : "iceberg"
     }
 
-iceberg_config = IcebergConfiguration()
+iceberg_config : IcebergConfiguration = IcebergConfiguration()
 
 @dataclass
 class TrinoConfiguration:

@@ -3,3 +3,5 @@
 .idea/
 extra-info/
 *.db
+iceberg/.adk/eval_history
+*.evalset.json
