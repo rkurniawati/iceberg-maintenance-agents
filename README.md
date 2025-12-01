@@ -1,4 +1,6 @@
-# Iceberg maintainer and optimizer 
+# Agent-Driven Optimization for Iceberg Data Lakehouses
+
+This project introduces an automated, multi-agent system powered by Gemini 2.5 Flash to intelligently maintain and optimize Apache Iceberg data lakehouses through tasks like compaction, metadata management, and best-practice guidance, reducing manual overhead and ensuring performance.
 
 ## Problem statement
 
