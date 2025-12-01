@@ -41,23 +41,8 @@ This project leverages a multi-agent system to automate the maintenance and opti
 
 ## Architecture
 
-```mermaid
-graph LR
-    RootAgent([root_agent]) --> IcebergDataLakeInfoAgent([iceberg_datalake_info_agent])
-    RootAgent --> IcebergMaintenanceAgent([iceberg_maintenance_agent])
-    RootAgent --> IcebergKnowledgeAgent([iceberg_knowledge_agent])
-    IcebergDataLakeInfoAgent --> get_tables
-    IcebergDataLakeInfoAgent --> get_table_schema
-    IcebergDataLakeInfoAgent --> get_all_current_table_files
-    IcebergDataLakeInfoAgent --> get_manifest_files
-    IcebergDataLakeInfoAgent --> find_orphan_files
-    IcebergDataLakeInfoAgent --> get_snapshots
-    IcebergMaintenanceAgent --> run_compaction
-    IcebergMaintenanceAgent --> run_expire_snapshots
-    IcebergMaintenanceAgent --> run_optimize_manifests
-    IcebergMaintenanceAgent --> run_remove_orphan_files
-    IcebergKnowledgeAgent --> IcebergDocumentation[Apache Iceberg<br>documentation in<br>Vertex AI DataStore]@{ shape: docs }
-```
+![Agents and tools architecture](agent-tool-diagram.png)
+
 **Note**: All agents in this system are powered by **Gemini 2.5 Flash**, demonstrating effective use of Google's Gemini models for agentic workflows.
 
 ## Key Features Implemented
