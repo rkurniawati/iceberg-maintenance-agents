@@ -8,7 +8,7 @@ class PrometheusPlugin(BasePlugin):
     """Plugin that pushes LLM metrics to Prometheus push gateway."""
 
     def __init__(self, pushgateway_url: str, job_name: str = "adk_job"):
-        super().__init__(name="prometheus_plugin")
+        super().__init__("prometheus_plugin")
         self.pushgateway_url = pushgateway_url
         self.job_name = job_name
 

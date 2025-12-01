@@ -1,0 +1,12 @@
+apiVersion: 1
+
+providers:
+  - name: 'ADK LLM Metrics'
+    orgId: 1
+    folder: '' # Optional: Use 'folder-name' to place in a specific folder
+    type: file
+    disableDeletion: false
+    editable: true
+    updateIntervalSeconds: 10 # Grafana will scan for changes every 10 seconds
+    options:
+      path: /var/lib/grafana/dashboards # Internal container path

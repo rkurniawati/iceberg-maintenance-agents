@@ -79,9 +79,15 @@ if __name__ == "__main__":
             runner,
             "bob123",
             [
-                "Do I have any preferences set?",
-                "Please use schema dogs in the datalake",
-                "How many tables are there in the datalake?",
+                "hello",
+                "dogs",
+                "What are the tables that would benefit from maintenance?",
+                "Are there other maintenance that I should do?"
+                # "Do I have any preferences set?",
+                # "Please use schema dogs in the datalake",
+                # "How many tables are there in the datalake?",
+                # "What tables will benefit from maintenance?",
+                # "Are there other maintenance that I should do?"
             ],
             "stateful-agentic-session",
         )
