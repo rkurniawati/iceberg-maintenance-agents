@@ -2,6 +2,7 @@ import logging
 from google.adk.sessions.sqlite_session_service import SqliteSessionService
 from google.genai import types
 import asyncio
+import sys
 
 from google.adk import Runner
 from .agent import root_agent
@@ -9,6 +10,7 @@ from .config import get_fast_model
 from .prometheus import PrometheusPlugin
 
 logging.basicConfig(
+    filename='iceberg-maintenance-agent.log',
     level=logging.DEBUG,
     format='%(asctime)s - %(levelname)s - %(name)s - %(message)s'
 )
@@ -16,7 +18,6 @@ logging.basicConfig(
 async def run_session(
         runner_instance: Runner,
         user_id: str,
-        user_queries: list[str] | str | None = None,
         session_name: str = "default",
 ):
     logging.debug(f"\n ### Session: {session_name}")
@@ -35,34 +36,31 @@ async def run_session(
         )
 
     # Process queries if provided
-    if session and user_queries:
-        # Convert single query to list for uniform processing
-        if type(user_queries) == str:
-            user_queries = [user_queries]
+    if not session:
+        logging.error("Session could not be created or retrieved.")
+        return
 
-        # Process each query in the list sequentially
-        for query in user_queries:
-            logging.debug(f"\nUser > {query}")
+    while True:
+        try:
+            query_text = input("User > ")
+            if query_text.lower() in ["exit", "quit"]:
+                break
 
-            # Convert the query string to the ADK Content format
-            query = types.Content(role="user", parts=[types.Part(text=query)])
+            query = types.Content(role="user", parts=[types.Part(text=query_text)])
 
-            # Stream the agent's response asynchronously
             async for event in runner_instance.run_async(
                     user_id=user_id, session_id=session.id, new_message=query
             ):
-                # Check if the event contains valid content
                 if event.content and event.content.parts:
-                    # Filter out empty or "None" responses before printing
-                    if (
-                            event.content.parts[0].text != "None"
-                            and event.content.parts[0].text
-                    ):
-                        logging.debug(f"{get_fast_model()} > {event.content.parts[0].text}")
-    elif not session:
-        logging.error("Session could not be created or retrieved.")
-    else:
-        logging.debug("No queries!")
+                    response_text = event.content.parts[0].text
+                    if response_text and response_text != "None":
+                        sys.stdout.write(f"{get_fast_model()} > {response_text}\n")
+                        sys.stdout.flush()
+        except EOFError:
+            break
+        except Exception as e:
+            logging.error(f"An error occurred during session run: {e}")
+            break
 
 if __name__ == "__main__":
     session_service = SqliteSessionService(db_path="iceberg_agent_main.db")
@@ -74,22 +72,5 @@ if __name__ == "__main__":
         session_service=session_service,
         plugins=[prometheus_plugin]
     )
-    asyncio.run(
-        run_session(
-            runner,
-            "bob123",
-            [
-                "hello",
-                "dogs",
-                "What are the tables that would benefit from maintenance?",
-                "Are there other maintenance that I should do?"
-                # "Do I have any preferences set?",
-                # "Please use schema dogs in the datalake",
-                # "How many tables are there in the datalake?",
-                # "What tables will benefit from maintenance?",
-                # "Are there other maintenance that I should do?"
-            ],
-            "stateful-agentic-session",
-        )
-    )
+    asyncio.run(run_session(runner, "test123", "stateful-agentic-session"))
 
