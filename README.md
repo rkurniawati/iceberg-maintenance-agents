@@ -1,6 +1,8 @@
 # Agent-Driven Optimization for Iceberg Data Lakehouses
 
-This project introduces an automated, multi-agent system powered by Gemini 2.5 Flash to intelligently maintain and optimize Apache Iceberg data lakehouses through tasks like compaction, metadata management, and best-practice guidance, reducing manual overhead and ensuring performance.
+This project introduces an automated, multi-agent system powered by Gemini 2.5 Flash to intelligently maintain and optimize Apache Iceberg data lakehouses through tasks like compaction, metadata management using best-practice guidance to reduce manual overhead and ensuring performance.
+
+![Agents maintaining Apache Iceberg datalake](iceberg-maintainer-thumbnail.png)
 
 ## Problem statement
 
@@ -79,9 +81,10 @@ This project demonstrates the following key concepts from the course:
 - **Google ADK (Agent Development Kit)**: Framework for building the multi-agent system
 - **Gemini 2.5 Flash**: LLM powering all agents
 - **Vertex AI Search**: Knowledge retrieval from Apache Iceberg documentation
-- **Apache Iceberg**: Target data lakehouse technology
-- **Trino**: Query engine for executing Iceberg maintenance operations
 - **SQLite**: Session persistence for stateful conversations
+- **Apache Iceberg**: The data lakehouse technology
+- **S3**: The object storage technology used for Apache Iceberg
+- **Trino**: Query engine for executing Iceberg maintenance operations
 - **Prometheus & Grafana**: Observability and metrics visualization
 - **Docker**: Containerized local development environment
 
